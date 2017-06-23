@@ -1,5 +1,6 @@
 package com.zgc.spark.ml.test;
 
+import com.zgc.spark.Utils.MlibUtls;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaRDD;
@@ -42,7 +43,7 @@ public class SvmsTest {
         //ref http://www.cnblogs.com/MOBIN/p/5373256.html rdd基础api详解
         //将数据分解为训练（60％）和测试（40％）。
         //true， 表示有放回的抽样,0.6表示采样概率，1l seed 随机种子
-        JavaRDD<LabeledPoint> training = data.sample(false, 0.01, 1L);
+        JavaRDD<LabeledPoint> training = data.sample(false, 0.6, 1L);
         //training.cache();
         JavaRDD<LabeledPoint> test = data.subtract(training);
         // Run training algorithm to build the model.
@@ -84,10 +85,10 @@ public class SvmsTest {
         //保存并加载模型
         String saveOutPath = "target/tmp/javaSVMWithSGDModel";
         File  f = new File(saveOutPath);
-        if(f.exists()) {
-            f.delete();
-        }
+        MlibUtls.deleteAllFilesOfDir(f);
         model.save(sc, saveOutPath);
         SVMModel sameModel = SVMModel.load(sc, saveOutPath);
     }
+
+
 }
