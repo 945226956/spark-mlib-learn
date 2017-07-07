@@ -26,7 +26,7 @@ import java.io.File;
  */
 public class SvmsTest {
     public static void main(String[] args) {
-        //hadoop home xia ±ØĞëÓĞwinutils.exeÎÄ¼ş
+        //hadoop home xia å¿…é¡»æœ‰winutils.exeæ–‡ä»¶
         // E:\HADOOP\hadoop-2.7.3\bin\winutils.exe
         System.setProperty("hadoop.home.dir", "E:/HADOOP/hadoop-2.7.3/");
         //System.setProperty("hadoop.home.dir", "winutils/");
@@ -36,13 +36,13 @@ public class SvmsTest {
                 .setMaster("local[2]");
         SparkContext sc = new SparkContext(sparkConf);
         String path = "data/mllib/sample_libsvm_data.txt";
-        //ÒÔLIBSVM¸ñÊ½¼ÓÔØÑµÁ·Êı¾İ¡£
+        //ä»¥LIBSVMæ ¼å¼åŠ è½½è®­ç»ƒæ•°æ®ã€‚
         JavaRDD<LabeledPoint> data = MLUtils.loadLibSVMFile(sc, path).toJavaRDD();
         // Split initial RDD into two... [60% training data, 40% testing data].
-        //ref http://www.myexception.cn/other/1961405.html rdd»ù´¡apiÏê½â
-        //ref http://www.cnblogs.com/MOBIN/p/5373256.html rdd»ù´¡apiÏê½â
-        //½«Êı¾İ·Ö½âÎªÑµÁ·£¨60£¥£©ºÍ²âÊÔ£¨40£¥£©¡£
-        //true£¬ ±íÊ¾ÓĞ·Å»ØµÄ³éÑù,0.6±íÊ¾²ÉÑù¸ÅÂÊ£¬1l seed Ëæ»úÖÖ×Ó
+        //ref http://www.myexception.cn/other/1961405.html rddåŸºç¡€apiè¯¦è§£
+        //ref http://www.cnblogs.com/MOBIN/p/5373256.html rddåŸºç¡€apiè¯¦è§£
+        //å°†æ•°æ®åˆ†è§£ä¸ºè®­ç»ƒï¼ˆ60ï¼…ï¼‰å’Œæµ‹è¯•ï¼ˆ40ï¼…ï¼‰ã€‚
+        //trueï¼Œ è¡¨ç¤ºæœ‰æ”¾å›çš„æŠ½æ ·,0.6è¡¨ç¤ºé‡‡æ ·æ¦‚ç‡ï¼Œ1l seed éšæœºç§å­
         JavaRDD<LabeledPoint> training = data.sample(false, 0.6, 1L);
         //training.cache();
         JavaRDD<LabeledPoint> test = data.subtract(training);
@@ -54,11 +54,11 @@ public class SvmsTest {
         final SVMModel model = SVMWithSGD.train(training.rdd(), numIterations);
 
         // Clear the default threshold.
-        //Çå³ıÄ¬ÈÏãĞÖµ¡£
+        //æ¸…é™¤é»˜è®¤é˜ˆå€¼ã€‚
         model.clearThreshold();
 
         // Compute raw scores on the test set.
-        //¼ÆËã²âÊÔ¼¯ÉÏµÄÔ­Ê¼·ÖÊı
+        //è®¡ç®—æµ‹è¯•é›†ä¸Šçš„åŸå§‹åˆ†æ•°
         JavaRDD<Tuple2<Object, Object>> scoreAndLabels = test.map(
                 new Function<LabeledPoint, Tuple2<Object, Object>>() {
                     public Tuple2<Object, Object> call(LabeledPoint p) {
@@ -76,13 +76,13 @@ public class SvmsTest {
         });
         System.out.println("------------------");
         // Get evaluation metrics.
-        //»ñÈ¡ÆÀ¹ÀÖ¸±ê¡£
+        //è·å–è¯„ä¼°æŒ‡æ ‡ã€‚
         BinaryClassificationMetrics metrics =
                 new BinaryClassificationMetrics(JavaRDD.toRDD(scoreAndLabels));
         double auROC = metrics.areaUnderROC();
         System.out.println("Area under ROC = " + auROC);
         // Save and load model
-        //±£´æ²¢¼ÓÔØÄ£ĞÍ
+        //ä¿å­˜å¹¶åŠ è½½æ¨¡å‹
         String saveOutPath = "target/tmp/javaSVMWithSGDModel";
         File  f = new File(saveOutPath);
         MlibUtls.deleteAllFilesOfDir(f);

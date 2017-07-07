@@ -63,7 +63,7 @@ public class LogisticRegressionWithGSDTest {
         RDD<LabeledPoint> parsedData = rdds[0];
         //测试数据集
         RDD<LabeledPoint> parsedTTes = rdds[1];
-        LogisticRegressionModel model3 = LogisticRegressionWithSGD.train(parsedData, 50);
+        final LogisticRegressionModel model3 = LogisticRegressionWithSGD.train(parsedData, 50);
         System.out.println("model3.weights():"+model3.weights());
         JavaRDD<Tuple2<Object,Object>> predict_lable = parsedTTes.toJavaRDD().map(new Function<LabeledPoint, Tuple2<Object,Object>>() {
             @Override

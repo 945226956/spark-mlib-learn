@@ -1,6 +1,7 @@
 package com.zgc.spark.ml.test;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -17,9 +18,15 @@ public class SGDTest_My {
 
     public static void main(String[] args) {
         Map<Integer, Integer> data = getData();
-        data.forEach((k, v) -> {
+        Iterator<Integer> it = data.keySet().iterator();
+        while (it.hasNext()){
+            Integer k = it.next();
+            Integer v = data.get(k);
             sgd(k,v);
-        });
+        }
+        /*data.forEach((k, v) -> {
+            sgd(k,v);
+        });*/
         System.out.println("theta:"+theta);
     }
 
